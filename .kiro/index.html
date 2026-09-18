@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Syaflower Shop — Premium flower boutique based in Solo, Indonesia." />
+  <title>Syaflower Shop</title>
+
+  <!-- Google Fonts: Playfair Display & DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ============================================================
+       CSS Custom Properties — Design Tokens
+       ============================================================ */
+    :root {
+      /* Color palette */
+      --color-bg-primary:   #1B3A4B; /* deep teal — primary backgrounds */
+      --color-bg-secondary: #FDF8F0; /* warm ivory — card / surface backgrounds */
+      --color-text-primary: #F5EFE6; /* cream — primary text */
+      --color-accent:       #7B8FA1; /* soft blue-berry — accents, active states */
+
+      /* Typography */
+      --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-sans:  'DM Sans', system-ui, -apple-system, sans-serif;
+
+      /* Spacing */
+      --section-padding-v: clamp(3rem, 8vw, 6rem);
+      --section-padding-h: clamp(1rem, 5vw, 4rem);
+
+      /* Transitions */
+      --transition-fast:   150ms ease;
+      --transition-normal: 300ms ease;
+    }
+
+    /* ============================================================
+       Global Reset
+       ============================================================ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* ============================================================
+       Global focus indicator — catches any interactive element not
+       covered by a component-level :focus-visible rule.
+       cream (#F5EFE6) on deep teal (#1B3A4B) yields ~10:1 contrast
+       ratio, well above the WCAG 3:1 minimum for focus indicators.
+       ============================================================ */
+    :focus-visible {
+      outline: 2px solid var(--color-text-primary);
+      outline-offset: 3px;
+    }
+
+    /* ============================================================
+       Screen-reader-only utility — visually hidden but accessible
+       ============================================================ */
+    .sr-only,
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    body {
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       Navbar
+       ============================================================ */
+
+    /* Base — fixed, full-width, transparent by default */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem var(--section-padding-h);
+      background: transparent;
+      transition: background var(--transition-normal);
+    }
+
+    /* Scrolled state — semi-opaque deep teal */
+    .navbar--scrolled {
+      background: rgba(27, 58, 75, 0.92);
+    }
+
+    /* Logo / wordmark */
+    .navbar__logo {
+      font-family: var(--font-serif);
+      font-size: 1.375rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      flex-shrink: 0;
+      /* Touch target: ensure minimum 44px hit area (Req 7.2, 9.7) */
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .navbar__logo:hover {
+      color: var(--color-accent);
+    }
+
+    /* Desktop nav links */
+    .navbar__nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .navbar__nav a {
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+      /* Touch target: min 44px hit area via inline-flex + min-height (Req 7.2, 9.7) */
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .navbar__nav a:hover {
+      color: var(--color-accent);
+    }
+
+    /* Shared CTA button base */
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0.625rem 1.25rem;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-bg-primary);
+      background-color: var(--color-accent);
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .cta-button:hover {
+      background-color: var(--color-text-primary);
+      transform: translateY(-1px);
+    }
+
+    .cta-button:focus-visible {
+      outline: 2px solid var(--color-text-primary);
+      outline-offset: 3px;
+    }
+
+    /* Navbar CTA — slight size reduction to stay proportional in the bar */
+    .navbar__cta {
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+    }
+
+    /* Hamburger button — hidden on desktop */
+    .navbar__hamburger {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      background: transparent;
+      border: none;
+      color: var(--color-text-primary);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 4px;
+      transition: color var(--transition-fast);
+    }
+
+    .navbar__hamburger:hover {
+      color: var(--color-accent);
+    }
+
+    .navbar__hamburger:focus-visible {
+      outline: 2px solid var(--color-text-primary);
+      outline-offset: 3px;
+    }
+
+    /* ============================================================
+       Mobile Navbar (≤768px)
+       ============================================================ */
+    @media (max-width: 768px) {
+      /* Show hamburger, hide desktop links + CTA */
+      .navbar__hamburger {
+        display: flex;
+      }
+
+      .navbar__nav,
+      .navbar__cta {
+        display: none;
+      }
+
+      /* Mobile dropdown — shown when navbar--menu-open is present */
+      .navbar--menu-open .navbar__nav {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--color-bg-primary);
+        padding: 5rem var(--section-padding-h) 2rem;
+        z-index: 99; /* behind navbar bar itself (z-index: 100) but above page content */
+        overflow-y: auto;
+        transition: opacity var(--transition-normal);
+      }
+
+      .navbar--menu-open .navbar__nav a {
+        width: 100%;
+        font-size: 1.25rem;
+        padding: 0.875rem 0;
+        border-bottom: 1px solid rgba(245, 239, 230, 0.12);
+      }
+
+      /* Show CTA at the bottom of the mobile menu */
+      .navbar--menu-open .navbar__cta {
+        display: inline-flex;
+        margin-top: 1.5rem;
+      }
+
+      /* Ensure hamburger stays above the open menu panel */
+      .navbar {
+        z-index: 100;
+      }
+    }
+
+    /* ============================================================
+       Hero Section
+       ============================================================ */
+
+    #hero {
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Background image layer — blurred separately so the text stays sharp */
+    .hero__bg-image {
+      position: absolute;
+      inset: 0;
+      margin: -4px; /* counteracts blur-edge artifacts */
+      background-image: url('images/hero.jpg');
+      background-size: cover;
+      background-position: center;
+      background-color: var(--color-bg-primary); /* fallback if image 404s */
+      filter: blur(2px);
+    }
+
+    /* Film-grain overlay */
+    .hero__grain {
+      position: absolute;
+      inset: 0;
+      filter: url(#grain-filter);
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    /* Text content — sits above the bg and grain layers */
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 0 var(--section-padding-h);
+      max-width: 800px;
+    }
+
+    .hero__title {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+    }
+
+    .hero__tagline {
+      font-family: var(--font-sans);
+      font-size: clamp(0.9rem, 2vw, 1.125rem);
+      color: var(--color-text-primary);
+      margin-top: 16px; /* ≥12px as required */
+      max-width: 60ch;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .hero__cta {
+      margin-top: 2rem;
+    }
+
+    /* Scroll sentinel — zero-height anchor for IntersectionObserver */
+    #hero-sentinel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       About Section
+       ============================================================ */
+
+    #about {
+      padding: var(--section-padding-v) var(--section-padding-h);
+      background-color: var(--color-bg-primary);
+    }
+
+    /* Two-column grid: image left, text right */
+    .about__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Image wrapper — acts as the positioned container for the grain overlay */
+    .about__image-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      background-color: var(--color-bg-secondary); /* placeholder if image 404s */
+      aspect-ratio: 1 / 1;
+    }
+
+    /* Product image fills the wrapper completely */
+    .about__img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    /* Film-grain overlay via ::after pseudo-element
+       Keeps the grain separate from the <img> so it doesn't distort it */
+    .about__image-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      filter: url(#grain-filter);
+      opacity: 0.12;
+      pointer-events: none;
+      border-radius: 4px;
+    }
+
+    /* Text column */
+    .about__text {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .about__heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1.2;
+    }
+
+    .about__narrative {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--color-text-primary);
+      opacity: 0.9;
+    }
+
+    .about__location {
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-accent);
+    }
+
+    .about__contact {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color var(--transition-fast);
+      /* Touch target: min 44px hit area (Req 7.2, 9.7) */
+      min-height: 44px;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .about__contact:hover {
+      color: var(--color-accent);
+    }
+
+    .about__contact:focus-visible {
+      outline: 2px solid var(--color-text-primary);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    /* Mobile (≤768px): single column, image stacked above text */
+    @media (max-width: 768px) {
+      .about__inner {
+        grid-template-columns: 1fr;
+      }
+
+      /* Image naturally comes first in HTML order, so it stacks above text */
+      .about__image-wrapper {
+        aspect-ratio: 4 / 3;
+      }
+    }
+
+    /* ============================================================
+       Gallery Section
+       ============================================================ */
+
+    #gallery {
+      padding: var(--section-padding-v) var(--section-padding-h);
+      background-color: var(--color-bg-primary);
+    }
+
+    .gallery__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .gallery__heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ============================================================
+       Filter Bar
+       ============================================================ */
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .filter-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0.5rem 1.125rem;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      background-color: var(--color-bg-primary);
+      border: 1px solid rgba(245, 239, 230, 0.25);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .filter-btn:hover {
+      background-color: var(--color-accent);
+      color: var(--color-bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    .filter-btn:focus-visible {
+      outline: 2px solid var(--color-text-primary);
+      outline-offset: 3px;
+    }
+
+    /* Active state — exclusively applied to the selected filter button */
+    .filter-btn--active {
+      background-color: var(--color-accent);
+      color: var(--color-bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    /* ============================================================
+       Gallery Grid
+       ============================================================ */
+
+    /* Mobile default — single column */
+    .gallery__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      position: relative; /* establishes stacking context for .product-card--hidden */
+    }
+
+    @media (min-width: 768px) {
+      .gallery__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .gallery__grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* ============================================================
+       Product Card
+       ============================================================ */
+
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-bg-secondary);
+      border-radius: 6px;
+      overflow: hidden;
+      /* Combined transition: hover-lift + filter-animation both fire on the same element */
+      transition: opacity var(--transition-normal),
+                  transform var(--transition-normal),
+                  box-shadow var(--transition-fast);
+    }
+
+    /* Hover lift effect */
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Filter hide animation — removes card from flow without layout jump */
+    .product-card--hidden {
+      opacity: 0;
+      transform: scale(0.96);
+      pointer-events: none;
+      position: absolute;
+    }
+
+    /* Card image wrapper */
+    .product-card__image-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background-color: var(--color-bg-secondary); /* fallback if image 404s */
+    }
+
+    .product-card__img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-normal);
+    }
+
+    .product-card:hover .product-card__img {
+      transform: scale(1.04);
+    }
+
+    /* Card body */
+    .product-card__body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+      padding: 1.125rem;
+      flex: 1;
+      color: var(--color-bg-primary);
+    }
+
+    .product-card__name {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--color-bg-primary);
+      line-height: 1.25;
+    }
+
+    .product-card__desc {
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      line-height: 1.55;
+      color: var(--color-bg-primary);
+      opacity: 0.8;
+      flex: 1;
+    }
+
+    .product-card__price {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--color-bg-primary);
+    }
+
+    /* Card CTA button — reuses shared .cta-button base, override for card context */
+    .product-card__cta {
+      align-self: flex-start;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+    }
+
+    /* ============================================================
+       Gallery Empty State
+       ============================================================ */
+
+    .gallery__empty {
+      grid-column: 1 / -1; /* span all columns */
+      padding: 3rem 1rem;
+      text-align: center;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      color: var(--color-text-primary);
+      opacity: 0.6;
+    }
+
+    /* ============================================================
+       Testimonials Section
+       ============================================================ */
+
+    #testimonials {
+      padding: var(--section-padding-v) var(--section-padding-h);
+      background-color: var(--color-bg-primary);
+    }
+
+    .testimonials__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .testimonials__heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .testimonials__subheading {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      color: var(--color-text-primary);
+      opacity: 0.7;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    /* Grid: 1 col mobile → 2 col at 768px → 3 col at 1280px */
+    .testimonials__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .testimonials__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .testimonials__grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Individual testimonial card */
+    .testimonial-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 2rem 1.75rem;
+      background-color: rgba(245, 239, 230, 0.06); /* subtle ivory tint on teal */
+      border: 1px solid rgba(245, 239, 230, 0.12);
+      border-radius: 6px;
+      color: var(--color-text-primary);
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .testimonial-card:hover {
+      border-color: rgba(245, 239, 230, 0.28);
+      background-color: rgba(245, 239, 230, 0.1);
+    }
+
+    /* Decorative large quotation mark */
+    .testimonial-card__quote-mark {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 4rem;
+      line-height: 0.8;
+      color: var(--color-accent);
+      user-select: none;
+    }
+
+    /* Quote text */
+    .testimonial-card__text {
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      color: var(--color-text-primary);
+      opacity: 0.9;
+      flex: 1;
+      /* Reset blockquote default margin */
+      margin: 0;
+    }
+
+    .testimonial-card__text p {
+      margin: 0;
+    }
+
+    /* Customer name */
+    .testimonial-card__author {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 500;
+      font-style: normal; /* override browser italic default on <cite> */
+      color: var(--color-accent);
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(245, 239, 230, 0.12);
+    }
+
+    /* ============================================================
+       Footer
+       ============================================================ */
+
+    footer[role="contentinfo"] {
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      border-top: 1px solid rgba(245, 239, 230, 0.12);
+      padding: var(--section-padding-v) var(--section-padding-h);
+    }
+
+    /* Three-column grid on desktop: brand takes 2fr, social + legal each 1fr */
+    .footer__inner {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Brand column — shop name, address, hours */
+    .footer__shop-name {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      letter-spacing: 0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer__address {
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--color-text-primary);
+      opacity: 0.8;
+      font-style: normal; /* override browser default italic for <address> */
+    }
+
+    .footer__hours {
+      margin-top: 0.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--color-text-primary);
+      opacity: 0.8;
+    }
+
+    /* Social column */
+    .footer__social {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .footer__social-link {
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color var(--transition-fast);
+      /* Touch target: min 44px hit area (Req 7.2, 9.7) */
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .footer__social-link:hover {
+      color: var(--color-accent);
+    }
+
+    .footer__social-link:focus-visible {
+      outline: 2px solid var(--color-text-primary);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    /* Copyright */
+    .footer__copyright {
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      color: var(--color-text-primary);
+      opacity: 0.65;
+      line-height: 1.5;
+    }
+
+    /* Mobile (≤768px): collapse to single column, stacked */
+    @media (max-width: 768px) {
+      .footer__inner {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    /* ============================================================
+       CTA Banner Section
+       ============================================================ */
+
+    /* Section — full-width dark band, distinct from the primary bg */
+    #cta {
+      background-color: #162F3D; /* slightly deeper than --color-bg-primary for visual contrast */
+      padding: var(--section-padding-v) var(--section-padding-h);
+    }
+
+    /* Inner container — centers all content and caps line width */
+    .cta-banner__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1.25rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* Section heading */
+    .cta-banner__heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1.25;
+    }
+
+    /* Supporting sub-text */
+    .cta-banner__sub {
+      font-family: var(--font-sans);
+      font-size: clamp(0.9rem, 1.8vw, 1.0625rem);
+      color: var(--color-text-primary);
+      opacity: 0.85;
+      line-height: 1.6;
+      max-width: 54ch;
+    }
+
+    /* CTA button — inherits .cta-button globals (min 44×44px, hover, focus-visible).
+       Override colors for WCAG AA contrast on the dark #162F3D background:
+       --color-text-primary (#F5EFE6) bg gives ~10:1 contrast against the section bg;
+       --color-bg-primary (#1B3A4B) text gives ~10:1 contrast against the cream bg. */
+    .cta-banner__btn {
+      background-color: var(--color-text-primary); /* cream — ~10:1 contrast on #162F3D */
+      color: var(--color-bg-primary);               /* deep teal text on cream */
+      margin-top: 0.5rem;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .cta-banner__btn:hover {
+      background-color: var(--color-accent);  /* soft blue-berry on hover */
+      color: var(--color-bg-primary);
+      transform: translateY(-2px);
+    }
+
+    .cta-banner__btn:focus-visible {
+      outline: 2px solid var(--color-text-primary);
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden SVG grain filter — referenced by film-grain overlay elements -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="grain-filter" x="0%" y="0%" width="100%" height="100%"
+              color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3"
+                      stitchTiles="stitch" result="noise"/>
+        <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+        <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" result="blended"/>
+        <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ============================================================
+       Navbar
+       ============================================================ -->
+  <header class="navbar" role="banner">
+    <!-- Logo / wordmark -->
+    <a class="navbar__logo" href="#hero">Syaflower</a>
+
+    <!-- Desktop nav links -->
+    <nav class="navbar__nav" aria-label="Main navigation">
+      <a href="#hero">Home</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <!-- Desktop CTA -->
+    <a class="cta-button navbar__cta" href="#gallery">Order Now</a>
+
+    <!-- Hamburger button — mobile only -->
+    <button class="navbar__hamburger" aria-label="Open menu" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+           aria-hidden="true" focusable="false">
+        <rect x="2" y="5"  width="20" height="2" rx="1" fill="currentColor"/>
+        <rect x="2" y="11" width="20" height="2" rx="1" fill="currentColor"/>
+        <rect x="2" y="17" width="20" height="2" rx="1" fill="currentColor"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ============================================================
+       Main content
+       ============================================================ -->
+  <main>
+    <!-- Hero Section — Task 5 -->
+    <section id="hero" aria-label="Hero">
+      <div class="hero__bg-image" aria-hidden="true"></div>
+      <div class="hero__grain" aria-hidden="true"></div>
+      <div class="hero__content">
+        <h1 class="hero__title">Syaflower</h1>
+        <p class="hero__tagline">Bunga segar pilihan untuk setiap momen berharga di Solo, Indonesia.</p>
+        <a class="cta-button hero__cta" href="#gallery">Shop Now</a>
+      </div>
+      <div id="hero-sentinel" aria-hidden="true"></div>
+    </section>
+
+    <!-- About Section — Task 6 -->
+    <section id="about" aria-labelledby="about-heading">
+      <div class="about__inner">
+        <div class="about__image-wrapper">
+          <img src="images/about.jpg"
+               alt="Rangkaian bunga segar di studio Syaflower, Solo"
+               class="about__img"
+               loading="lazy"
+               width="600" height="600" />
+        </div>
+        <div class="about__text">
+          <h2 id="about-heading" class="about__heading">Tentang Syaflower</h2>
+          <p class="about__narrative">
+            Syaflower adalah butik bunga premium di jantung kota Solo, Indonesia.
+            Kami menghadirkan rangkaian bunga segar pilihan yang memancarkan keanggunan
+            dan kehangatan — dari mawar klasik hingga dekorasi pernikahan mewah.
+            Setiap karya kami dibuat dengan penuh cinta dan keahlian, untuk menemani
+            setiap momen berharga dalam hidup Anda.
+          </p>
+          <p class="about__location">📍 Solo, Indonesia</p>
+          <a class="about__contact" href="https://wa.me/6289686838565" target="_blank" rel="noopener noreferrer">
+            Hubungi kami via WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section — Tasks 7 & 8 -->
+    <section id="gallery" aria-labelledby="gallery-heading">
+      <div class="gallery__inner">
+        <h2 id="gallery-heading" class="gallery__heading">Koleksi Bunga Kami</h2>
+        <div class="filter-bar" role="group" aria-label="Filter by category">
+          <button class="filter-btn filter-btn--active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="roses">Roses</button>
+          <button class="filter-btn" data-filter="tulips">Tulips</button>
+          <button class="filter-btn" data-filter="bouquets">Bouquets</button>
+          <button class="filter-btn" data-filter="wedding">Wedding</button>
+          <button class="filter-btn" data-filter="seasonal">Seasonal</button>
+        </div>
+        <div class="gallery__grid" id="gallery-grid">
+          <!-- Product cards injected by JS renderGallery() -->
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Banner Section — Task 10 -->
+    <section id="cta" aria-labelledby="cta-heading">
+      <div class="cta-banner__inner">
+        <h2 id="cta-heading" class="cta-banner__heading">Siap Memesan Bunga Impian Anda?</h2>
+        <p class="cta-banner__sub">Hubungi kami langsung via WhatsApp dan dapatkan rangkaian bunga terbaik dari Solo.</p>
+        <a class="cta-button cta-banner__btn"
+           href="https://wa.me/6289686838565?text=Halo%2C%20saya%20ingin%20memesan%20bunga%20dari%20Syaflower"
+           target="_blank"
+           rel="noopener noreferrer">
+          Order Now
+        </a>
+      </div>
+    </section>
+
+    <!-- Testimonials Section — Task 11 -->
+    <section id="testimonials" aria-labelledby="testimonials-heading">
+      <div class="testimonials__inner">
+        <h2 id="testimonials-heading" class="testimonials__heading">Apa Kata Pelanggan Kami</h2>
+        <p class="testimonials__subheading">Kepuasan Anda adalah kebanggaan kami.</p>
+
+        <div class="testimonials__grid">
+
+          <article class="testimonial-card">
+            <span class="testimonial-card__quote-mark" aria-hidden="true">"</span>
+            <blockquote class="testimonial-card__text">
+              <p>Rangkaian bunganya luar biasa cantik! Saya pesan untuk ulang tahun ibu dan beliau sangat senang. Kemasannya rapi, bunganya segar, dan dikirim tepat waktu. Pasti pesan lagi!</p>
+            </blockquote>
+            <cite class="testimonial-card__author">— Ratna Kusuma, Solo</cite>
+          </article>
+
+          <article class="testimonial-card">
+            <span class="testimonial-card__quote-mark" aria-hidden="true">"</span>
+            <blockquote class="testimonial-card__text">
+              <p>Buket pengantin dari Syaflower benar-benar mewah dan sesuai ekspektasi. Tim Syaflower sangat responsif dan sabar membantu saya memilih konsep. Pernikahan kami terasa semakin istimewa.</p>
+            </blockquote>
+            <cite class="testimonial-card__author">— Diah Ayu Pertiwi, Surakarta</cite>
+          </article>
+
+          <article class="testimonial-card">
+            <span class="testimonial-card__quote-mark" aria-hidden="true">"</span>
+            <blockquote class="testimonial-card__text">
+              <p>Saya sering memesan mawar dan tulip dari Syaflower untuk dekorasi kantor. Kualitasnya konsisten bagus, warnanya cerah, dan harganya sangat terjangkau. Highly recommended!</p>
+            </blockquote>
+            <cite class="testimonial-card__author">— Bagas Prasetyo, Solo</cite>
+          </article>
+
+          <article class="testimonial-card">
+            <span class="testimonial-card__quote-mark" aria-hidden="true">"</span>
+            <blockquote class="testimonial-card__text">
+              <p>Untaian melati untuk acara siraman sangat harum dan autentik. Syaflower benar-benar paham selera pelanggan lokal. Pelayanannya ramah dan profesional.</p>
+            </blockquote>
+            <cite class="testimonial-card__author">— Sari Widyastuti, Karanganyar</cite>
+          </article>
+
+          <article class="testimonial-card">
+            <span class="testimonial-card__quote-mark" aria-hidden="true">"</span>
+            <blockquote class="testimonial-card__text">
+              <p>Mixed Pastel Bouquet-nya cantik banget, kombinasi warnanya pas untuk hadiah wisuda. Respon WhatsApp cepat dan pengiriman aman. Terima kasih Syaflower!</p>
+            </blockquote>
+            <cite class="testimonial-card__author">— Febriana Indah, Solo</cite>
+          </article>
+
+          <article class="testimonial-card">
+            <span class="testimonial-card__quote-mark" aria-hidden="true">"</span>
+            <blockquote class="testimonial-card__text">
+              <p>Dekorasi meja pernikahan adik saya menggunakan centerpiece dari Syaflower. Tampilannya elegan dan tahan lama sepanjang acara. Tamu banyak yang bertanya beli di mana!</p>
+            </blockquote>
+            <cite class="testimonial-card__author">— Hendra Wijaya, Sukoharjo</cite>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" aria-labelledby="contact-heading">
+      <h2 id="contact-heading" class="visually-hidden">Contact</h2>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       Footer — Task 12
+       ============================================================ -->
+  <footer role="contentinfo">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <span class="footer__shop-name">Syaflower</span>
+        <address class="footer__address">
+          Solo, Jawa Tengah, Indonesia
+        </address>
+        <p class="footer__hours">Senin–Sabtu 08:00–17:00</p>
+      </div>
+      <div class="footer__social">
+        <a class="footer__social-link" href="https://www.instagram.com/syaflower"
+           target="_blank" rel="noopener noreferrer">
+          Instagram @syaflower
+        </a>
+      </div>
+      <p class="footer__copyright">
+        &copy; <span id="footer-year"></span> Syaflower. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       Application Script
+       ============================================================ -->
+  <script>
+    // ============================================================
+    // Constants
+    // ============================================================
+
+    /** Shop WhatsApp contact number (E.164 format, digits only) */
+    const SHOP_PHONE = '6289686838565';
+
+    // ============================================================
+    // Utility Functions
+    // ============================================================
+
+    /**
+     * Formats an IDR integer to "Rp X.XXX" with thousand-separator dots.
+     * @param {number} amount
+     * @returns {string}  e.g. formatIDR(150000) → "Rp 150.000"
+     */
+    function formatIDR(amount) {
+      return 'Rp ' + amount.toLocaleString('id-ID');
+    }
+
+    /**
+     * Builds a wa.me deep-link URL.
+     * @param {string} phone   - E.164 digits only, e.g. "6281234567890"
+     * @param {string} message - Pre-filled message text
+     * @returns {string}
+     */
+    function buildWaUrl(phone, message) {
+      return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    }
+
+    // ============================================================
+    // Product Data
+    // ============================================================
+
+    /**
+     * @typedef {Object} Product
+     * @property {string}  id          - URL-safe unique slug
+     * @property {string}  name        - Display name
+     * @property {string}  category    - Matches a FilterBar data-filter value
+     * @property {string}  description - ≤80 characters
+     * @property {number}  priceIDR    - Price in IDR as integer
+     * @property {string}  imageSrc    - Relative path to product image
+     * @property {string}  imageAlt    - Non-empty alt text, 1–125 chars
+     * @property {string}  waMessage   - Pre-filled WhatsApp message text
+     */
+
+    /** @type {Product[]} */
+    const PRODUCTS = [
+      {
+        id: 'roses-classic',
+        name: 'Classic Red Roses',
+        category: 'roses',
+        description: 'Mawar merah pilihan, segar dan harum — cocok untuk hadiah spesial.',
+        priceIDR: 150000,
+        imageSrc: 'images/"WhatsApp Image 2026-09-19 at 3.23.29 AM.jpeg"',
+        imageAlt: 'Seikat mawar merah klasik dibungkus kertas kraft cokelat',
+        waMessage: 'Halo, saya ingin memesan Classic Red Roses (Rp 150.000)'
+      },
+      {
+        id: 'roses-pink-garden',
+        name: 'Pink Garden Roses',
+        category: 'roses',
+        description: 'Mawar garden pink lembut dengan aroma khas, elegan dan romantis.',
+        priceIDR: 175000,
+        imageSrc: 'images/1789762651296.png',
+        imageAlt: 'Seikat mawar garden berwarna merah muda dalam vas kaca bening',
+        waMessage: 'Halo, saya ingin memesan Pink Garden Roses (Rp 175.000)'
+      },
+      {
+        id: 'tulips-spring',
+        name: 'Spring Tulips',
+        category: 'tulips',
+        description: 'Tulip segar aneka warna, simbol musim semi yang ceria.',
+        priceIDR: 200000,
+        imageSrc: 'images/tulips-spring.jpg',
+        imageAlt: 'Seikat tulip warna-warni merah, kuning, dan ungu diikat pita putih',
+        waMessage: 'Halo, saya ingin memesan Spring Tulips (Rp 200.000)'
+      },
+      {
+        id: 'bouquet-mixed-pastel',
+        name: 'Mixed Pastel Bouquet',
+        category: 'bouquets',
+        description: 'Rangkaian bunga pastel campuran — mawar, lisiantus, dan baby breath.',
+        priceIDR: 250000,
+        imageSrc: 'images/bouquet-mixed-pastel.jpg',
+        imageAlt: 'Buket campuran bunga pastel dengan hiasan baby breath dan dedaunan hijau',
+        waMessage: 'Halo, saya ingin memesan Mixed Pastel Bouquet (Rp 250.000)'
+      },
+      {
+        id: 'bouquet-sunflower',
+        name: 'Sunflower Bouquet',
+        category: 'bouquets',
+        description: 'Buket bunga matahari cerah — hadiah sempurna untuk hari ulang tahun.',
+        priceIDR: 220000,
+        imageSrc: 'images/bouquet-sunflower.jpg',
+        imageAlt: 'Buket bunga matahari besar dibungkus kertas kraft dengan pita kuning',
+        waMessage: 'Halo, saya ingin memesan Sunflower Bouquet (Rp 220.000)'
+      },
+      {
+        id: 'wedding-bridal-white',
+        name: 'Bridal White Bouquet',
+        category: 'wedding',
+        description: 'Buket pengantin putih elegan — mawar putih, peony, dan stephanotis.',
+        priceIDR: 450000,
+        imageSrc: 'images/wedding-bridal-white.jpg',
+        imageAlt: 'Buket pengantin mewah dari mawar putih dan peony dengan aksen dedaunan silver',
+        waMessage: 'Halo, saya ingin memesan Bridal White Bouquet (Rp 450.000)'
+      },
+      {
+        id: 'wedding-table-centerpiece',
+        name: 'Wedding Table Centerpiece',
+        category: 'wedding',
+        description: 'Dekorasi meja pernikahan mewah — cocok untuk resepsi di Solo.',
+        priceIDR: 350000,
+        imageSrc: 'images/wedding-table-centerpiece.jpg',
+        imageAlt: 'Dekorasi tengah meja pernikahan dari bunga mawar putih dan merah muda dalam vas tinggi',
+        waMessage: 'Halo, saya ingin memesan Wedding Table Centerpiece (Rp 350.000)'
+      },
+      {
+        id: 'seasonal-javanese-jasmine',
+        name: 'Javanese Jasmine Garland',
+        category: 'seasonal',
+        description: 'Untaian melati khas Jawa, harum alami — ideal untuk acara adat.',
+        priceIDR: 120000,
+        imageSrc: 'images/seasonal-javanese-jasmine.jpg',
+        imageAlt: 'Untaian bunga melati putih khas Jawa dirangkai menjadi kalung dekoratif',
+        waMessage: 'Halo, saya ingin memesan Javanese Jasmine Garland (Rp 120.000)'
+      }
+    ];
+
+    // ============================================================
+    // Navbar
+    // ============================================================
+
+    /**
+     * Initialises all navbar behaviours:
+     *  - IntersectionObserver on #hero-sentinel drives the scrolled background
+     *  - Hamburger button toggles the mobile menu
+     *  - Mobile nav links close the menu when tapped
+     *  - Overlay click closes the mobile menu
+     */
+    function initNavbar() {
+      const header      = document.querySelector('.navbar');
+      const hamburger   = document.querySelector('.navbar__hamburger');
+      const navLinks    = document.querySelectorAll('.navbar__nav a');
+      const sentinel    = document.getElementById('hero-sentinel');
+
+      if (!header || !hamburger || !sentinel) return;
+
+      // ----------------------------------------------------------
+      // 1. Scroll-state: add/remove navbar--scrolled via
+      //    IntersectionObserver watching the bottom-of-hero sentinel
+      // ----------------------------------------------------------
+      const scrollObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            // sentinel visible  → user is at/near top → no scrolled style
+            // sentinel invisible → user has scrolled past hero → apply style
+            header.classList.toggle('navbar--scrolled', !entry.isIntersecting);
+          });
+        },
+        { threshold: 0 }
+      );
+      scrollObserver.observe(sentinel);
+
+      // ----------------------------------------------------------
+      // 2. Helper: open / close mobile menu
+      // ----------------------------------------------------------
+      function openMenu() {
+        header.classList.add('navbar--menu-open');
+        hamburger.setAttribute('aria-expanded', 'true');
+        hamburger.setAttribute('aria-label', 'Close menu');
+      }
+
+      function closeMenu() {
+        header.classList.remove('navbar--menu-open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.setAttribute('aria-label', 'Open menu');
+      }
+
+      // ----------------------------------------------------------
+      // 3. Hamburger button toggles menu open/closed
+      // ----------------------------------------------------------
+      hamburger.addEventListener('click', function () {
+        const isOpen = header.classList.contains('navbar--menu-open');
+        isOpen ? closeMenu() : openMenu();
+      });
+
+      // ----------------------------------------------------------
+      // 4. Mobile nav links — close menu when a link is tapped
+      // ----------------------------------------------------------
+      navLinks.forEach(function (link) {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // ----------------------------------------------------------
+      // 5. Overlay / backdrop click — close menu when clicking
+      //    outside the nav area (uses event delegation on document)
+      // ----------------------------------------------------------
+      document.addEventListener('click', function (event) {
+        if (
+          header.classList.contains('navbar--menu-open') &&
+          !header.contains(event.target)
+        ) {
+          closeMenu();
+        }
+      });
+    }
+
+    // ============================================================
+    // Hero Section
+    // ============================================================
+
+    /**
+     * Initialises Hero section behaviours:
+     *  - Smooth-scroll click handler on .hero__cta scrolls to #gallery
+     */
+    function initHero() {
+      const heroCta   = document.querySelector('.hero__cta');
+      const gallery   = document.querySelector('#gallery');
+
+      if (!heroCta || !gallery) return;
+
+      heroCta.addEventListener('click', function (e) {
+        e.preventDefault();
+        gallery.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+
+    // ============================================================
+    // Gallery — Rendering
+    // ============================================================
+
+    /**
+     * Renders all product cards from PRODUCTS into #gallery-grid.
+     * Wrapped in try/catch: on error, logs to console and shows a
+     * fallback message in the grid.
+     */
+    function renderGallery() {
+      const grid = document.getElementById('gallery-grid');
+      if (!grid) return;
+
+      try {
+        const html = PRODUCTS.map(function (product) {
+          const waUrl = buildWaUrl(SHOP_PHONE, product.waMessage);
+          return [
+            '<article class="product-card" data-category="' + product.category + '">',
+            '  <div class="product-card__image-wrapper">',
+            '    <img src="' + product.imageSrc + '"',
+            '         alt="' + product.imageAlt + '"',
+            '         loading="lazy"',
+            '         class="product-card__img" />',
+            '  </div>',
+            '  <div class="product-card__body">',
+            '    <h3 class="product-card__name">' + product.name + '</h3>',
+            '    <p class="product-card__desc">' + product.description + '</p>',
+            '    <p class="product-card__price">' + formatIDR(product.priceIDR) + '</p>',
+            '    <a class="cta-button product-card__cta"',
+            '       href="' + waUrl + '"',
+            '       target="_blank"',
+            '       rel="noopener noreferrer">Order</a>',
+            '  </div>',
+            '</article>'
+          ].join('\n');
+        }).join('\n');
+
+        grid.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        grid.innerHTML = '<p class="gallery__empty">Unable to load products. Please refresh.</p>';
+      }
+    }
+
+    // ============================================================
+    // Gallery — Filtering
+    // ============================================================
+
+    /** Currently active gallery filter category */
+    let activeFilter = 'all';
+
+    /**
+     * Filters the gallery to the given category.
+     * Updates the active filter button, shows/hides product cards, and
+     * manages the empty-state message when no cards match.
+     * @param {string} category - A data-filter value, e.g. "roses" or "all"
+     */
+    function applyFilter(category) {
+      activeFilter = category;
+
+      // Update active button — only the matching button gets the active class
+      document.querySelectorAll('.filter-btn').forEach(function (btn) {
+        btn.classList.toggle('filter-btn--active', btn.dataset.filter === category);
+      });
+
+      // Show or hide each product card
+      const cards = document.querySelectorAll('.product-card');
+      let visibleCount = 0;
+      cards.forEach(function (card) {
+        const matches = category === 'all' || card.dataset.category === category;
+        card.classList.toggle('product-card--hidden', !matches);
+        if (matches) visibleCount++;
+      });
+
+      // Empty-state message
+      const grid = document.getElementById('gallery-grid');
+      let emptyMsg = grid.querySelector('.gallery__empty');
+      if (visibleCount === 0) {
+        if (!emptyMsg) {
+          emptyMsg = document.createElement('p');
+          emptyMsg.className = 'gallery__empty';
+          emptyMsg.textContent = 'No products available in this category.';
+          grid.appendChild(emptyMsg);
+        }
+      } else {
+        if (emptyMsg) emptyMsg.remove();
+      }
+    }
+
+    // ============================================================
+    // Application entry point
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function () {
+      initNavbar();
+      initHero();
+      renderGallery();
+
+      // Bind filter button click handlers (after renderGallery so cards exist in DOM)
+      document.querySelectorAll('.filter-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          applyFilter(btn.dataset.filter);
+        });
+      });
+
+      // Task 12.3 — Dynamic copyright year
+      document.getElementById('footer-year').textContent = new Date().getFullYear();
+    });
+  </script>
+
+</body>
+</html>
